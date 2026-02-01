@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinalsArc - Your Personal AI-Powered Tutor</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>FinalsArc</h1>
+            <p class="tagline">Your Personal AI-Powered Tutor</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="upload">
+                <span class="icon">📤</span> Upload
+            </button>
+            <button class="tab-btn" data-tab="notes">
+                <span class="icon">📝</span> Notes
+            </button>
+            <button class="tab-btn" data-tab="ask">
+                <span class="icon">💭</span> Questions
+            </button>
+            <button class="tab-btn" data-tab="quiz">
+                <span class="icon">✓</span> Quiz
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Upload Tab -->
+            <div id="upload-tab" class="tab-pane active">
+                <div class="upload-section">
+                    <h2>Upload Your Study Material</h2>
+                    <p>Upload textbooks, notes, slides, or images (PDF, DOCX, PPTX, JPG, PNG)</p>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📁</div>
+                        <p>Drag & drop your files here or click to browse</p>
+                        <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.pptx,.ppt,.jpg,.jpeg,.png,.bmp,.tiff,.gif" multiple hidden>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject (Optional):</label>
+                        <input type="text" id="subject" placeholder="e.g., Mathematics, Biology, Physics">
+                    </div>
+
+                    <button class="btn btn-primary" id="uploadBtn">Upload & Process</button>
+                </div>
+
+                <!-- Materials List -->
+                <div class="materials-section">
+                    <h3>Your Materials</h3>
+                    <div id="materialsList" class="materials-list">
+                        <p class="empty-state">No materials uploaded yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Notes Tab -->
+            <div id="notes-tab" class="tab-pane">
+                <h2>Study Notes</h2>
+                <p>Generate comprehensive study notes from your materials</p>
+                
+                <div class="form-group">
+                    <label for="notesMaterial">Select Material:</label>
+                    <select id="notesMaterial" class="form-control">
+                        <option value="">-- Select a material --</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="notesLevel">Your Level:</label>
+                        <select id="notesLevel" class="form-control">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate" selected>Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notesFocus">Focus:</label>
+                        <select id="notesFocus" class="form-control">
+                            <option value="concept-oriented" selected>Concept-Oriented</option>
+                            <option value="exam-oriented">Exam-Oriented</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="generateNotesBtn">Generate Notes</button>
+
+                <div id="notesOutput" class="output-area"></div>
+            </div>
+
+            <!-- Ask Questions Tab -->
+            <!-- Ask Questions Tab -->
+            <div id="ask-tab" class="tab-pane">
+                <h2>Ask Questions</h2>
+                <p>Get detailed explanations about your study material or any concept</p>
+
+                <div class="form-group">
+                    <label for="askMaterial">Related Material (Optional):</label>
+                    <select id="askMaterial" class="form-control">
+                        <option value="">-- None (General Question) --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="askLevel">Your Level:</label>
+                    <select id="askLevel" class="form-control">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate" selected>Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="questionInput">Your Question:</label>
+                    <textarea id="questionInput" class="form-control" rows="4" placeholder="Type your question here..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" id="askBtn">Ask Question</button>
+
+                <div id="answerOutput" class="output-area"></div>
+
+                <div id="simplerExplanation" style="display: none;">
+                    <button class="btn btn-secondary" id="simplerBtn">Need Simpler Explanation?</button>
+                </div>
+            </div>
+
+            <!-- Quiz Tab -->
+            <div id="quiz-tab" class="tab-pane">
+                <h2>Practice Quiz</h2>
+                <p>Test your knowledge with AI-generated questions</p>
+                
+                <div class="form-group">
+                    <label for="quizMaterial">Select Material:</label>
+                    <select id="quizMaterial" class="form-control">
+                        <option value="">-- Select a material --</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numQuestions">Number of Questions:</label>
+                        <input type="number" id="numQuestions" class="form-control" value="5" min="1" max="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizDifficulty">Difficulty:</label>
+                        <select id="quizDifficulty" class="form-control">
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                            <option value="mixed">Mixed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="generateQuizBtn">Generate Quiz</button>
+
+                <div id="quizOutput" class="quiz-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Processing... Please wait</p>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
