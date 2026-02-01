@@ -417,6 +417,9 @@ async def get_supported_formats():
 if os.path.exists("frontend"):
     app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
+# Vercel serverless handler
+from mangum import Mangum
+handler = Mangum(app)
 
 if __name__ == "__main__":
     import uvicorn

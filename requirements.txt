@@ -36,3 +36,6 @@ numpy==1.26.3
 
 # CORS
 fastapi-cors==0.0.6
+
+# Serverless adapter for Vercel
+mangum==0.17.0
