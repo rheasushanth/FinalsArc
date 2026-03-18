@@ -29,32 +29,55 @@
         <div class="tab-content">
             <!-- Upload Tab -->
             <div id="upload-tab" class="tab-pane active">
-                <div class="upload-section">
-                    <h2>Upload Materials</h2>
-                    <p class="subtitle">PDF, DOCX, PPTX, JPG, PNG</p>
-                    
-                    <div class="upload-area" id="uploadArea">
-                        <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        <p class="upload-text">Drop files or <span class="browse-link">browse</span></p>
-                        <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.pptx,.ppt,.jpg,.jpeg,.png,.bmp,.tiff,.gif" multiple hidden>
-                    </div>
+                <div class="upload-layout">
+                    <section class="upload-intro">
+                        <p class="eyebrow">WHAT THIS DOES</p>
+                        <h2>Build a private AI study space from your own material.</h2>
+                        <p class="intro-copy">Drop lectures, notes, and slides to generate notes, ask grounded questions, and run practice quizzes in one flow.</p>
 
-                    <div class="subjects-section">
-                        <label class="subjects-label">SUBJECTS</label>
-                        <div class="subjects-container">
-                            <div id="subjectTags" class="subject-tags">
-                                <!-- Subject tags will be added here dynamically -->
+                        <div class="metric-row">
+                            <div class="metric-card">
+                                <span class="metric-value">5+</span>
+                                <span class="metric-label">File formats</span>
                             </div>
-                            <button class="add-subject-btn" id="addSubjectBtn">Add subject</button>
+                            <div class="metric-card">
+                                <span class="metric-value">3</span>
+                                <span class="metric-label">Study modes</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-value">AI</span>
+                                <span class="metric-label">Adaptive tutor</span>
+                            </div>
                         </div>
-                        <input type="text" id="subjectInput" class="subject-input" placeholder="Enter subject name" style="display: none;">
-                    </div>
+                    </section>
 
-                    <button class="btn btn-primary" id="uploadBtn">UPLOAD</button>
+                    <section class="upload-section">
+                        <p class="subtitle">UPLOAD MATERIALS</p>
+
+                        <div class="upload-area" id="uploadArea">
+                            <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p class="upload-text">Drop files or <span class="browse-link">browse</span></p>
+                            <p class="upload-hint">PDF, DOCX, PPTX, JPG, PNG</p>
+                            <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.pptx,.ppt,.jpg,.jpeg,.png,.bmp,.tiff,.gif" multiple hidden>
+                        </div>
+
+                        <div class="subjects-section">
+                            <label class="subjects-label">SUBJECTS</label>
+                            <div class="subjects-container">
+                                <div id="subjectTags" class="subject-tags">
+                                    <!-- Subject tags will be added here dynamically -->
+                                </div>
+                                <button class="add-subject-btn" id="addSubjectBtn">Add subject</button>
+                            </div>
+                            <input type="text" id="subjectInput" class="subject-input" placeholder="Enter subject name" style="display: none;">
+                        </div>
+
+                        <button class="btn btn-primary" id="uploadBtn">Upload</button>
+                    </section>
                 </div>
 
                 <!-- Materials List -->

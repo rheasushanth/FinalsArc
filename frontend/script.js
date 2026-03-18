@@ -123,7 +123,7 @@ function updateFileDisplay() {
     uploadedFiles = Array.from(fileInput.files);
     if (uploadedFiles.length > 0) {
         const fileNames = uploadedFiles.map(f => f.name).join(', ');
-        uploadArea.querySelector('p').textContent = `Selected: ${fileNames}`;
+        uploadArea.querySelector('.upload-text').textContent = `Selected: ${fileNames}`;
     }
 }
 
