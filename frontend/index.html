@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinalsArc - Your Personal AI-Powered Tutor</title>
+    <title>FinalsArc - Personal AI Tutor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
@@ -11,45 +14,47 @@
         <!-- Header -->
         <header class="header">
             <h1>FinalsArc</h1>
-            <p class="tagline">Your Personal AI-Powered Tutor</p>
+            <p class="tagline">PERSONAL AI TUTOR</p>
         </header>
 
         <!-- Navigation Tabs -->
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="upload">
-                <span class="icon">📤</span> Upload
-            </button>
-            <button class="tab-btn" data-tab="notes">
-                <span class="icon">📝</span> Notes
-            </button>
-            <button class="tab-btn" data-tab="ask">
-                <span class="icon">💭</span> Questions
-            </button>
-            <button class="tab-btn" data-tab="quiz">
-                <span class="icon">✓</span> Quiz
-            </button>
-        </div>
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="upload">UPLOAD</button>
+            <button class="tab-btn" data-tab="notes">NOTES</button>
+            <button class="tab-btn" data-tab="ask">QUESTIONS</button>
+            <button class="tab-btn" data-tab="quiz">QUIZ</button>
+        </nav>
 
         <!-- Tab Content -->
         <div class="tab-content">
             <!-- Upload Tab -->
             <div id="upload-tab" class="tab-pane active">
                 <div class="upload-section">
-                    <h2>Upload Your Study Material</h2>
-                    <p>Upload textbooks, notes, slides, or images (PDF, DOCX, PPTX, JPG, PNG)</p>
+                    <h2>Upload Materials</h2>
+                    <p class="subtitle">PDF, DOCX, PPTX, JPG, PNG</p>
                     
                     <div class="upload-area" id="uploadArea">
-                        <div class="upload-icon">📁</div>
-                        <p>Drag & drop your files here or click to browse</p>
+                        <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="upload-text">Drop files or <span class="browse-link">browse</span></p>
                         <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.pptx,.ppt,.jpg,.jpeg,.png,.bmp,.tiff,.gif" multiple hidden>
                     </div>
 
-                    <div class="form-group">
-                        <label for="subject">Subject (Optional):</label>
-                        <input type="text" id="subject" placeholder="e.g., Mathematics, Biology, Physics">
+                    <div class="subjects-section">
+                        <label class="subjects-label">SUBJECTS</label>
+                        <div class="subjects-container">
+                            <div id="subjectTags" class="subject-tags">
+                                <!-- Subject tags will be added here dynamically -->
+                            </div>
+                            <button class="add-subject-btn" id="addSubjectBtn">Add subject</button>
+                        </div>
+                        <input type="text" id="subjectInput" class="subject-input" placeholder="Enter subject name" style="display: none;">
                     </div>
 
-                    <button class="btn btn-primary" id="uploadBtn">Upload & Process</button>
+                    <button class="btn btn-primary" id="uploadBtn">UPLOAD</button>
                 </div>
 
                 <!-- Materials List -->

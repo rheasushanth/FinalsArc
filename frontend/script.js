@@ -7,6 +7,7 @@ let uploadedFiles = [];
 let materials = [];
 let currentQuestion = '';
 let currentExplanation = '';
+let subjects = ['Mathematics', 'Biology'];
 
 // DOM Elements
 const uploadArea = document.getElementById('uploadArea');
@@ -14,6 +15,66 @@ const fileInput = document.getElementById('fileInput');
 const uploadBtn = document.getElementById('uploadBtn');
 const materialsList = document.getElementById('materialsList');
 const loadingOverlay = document.getElementById('loadingOverlay');
+const addSubjectBtn = document.getElementById('addSubjectBtn');
+const subjectInput = document.getElementById('subjectInput');
+const subjectTags = document.getElementById('subjectTags');
+
+// Initialize subjects display
+window.addEventListener('DOMContentLoaded', () => {
+    renderSubjectTags();
+});
+
+// Subject Tag Management
+// Make removeSubject globally accessible
+window.removeSubject = function(subject) {
+    subjects = subjects.filter(s => s !== subject);
+    renderSubjectTags();
+};
+addSubjectBtn.addEventListener('click', () => {
+    subjectInput.style.display = 'block';
+    subjectInput.focus();
+    addSubjectBtn.style.display = 'none';
+});
+
+subjectInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && subjectInput.value.trim()) {
+        addSubject(subjectInput.value.trim());
+        subjectInput.value = '';
+        subjectInput.style.display = 'none';
+        addSubjectBtn.style.display = 'block';
+    } else if (e.key === 'Escape') {
+        subjectInput.value = '';
+        subjectInput.style.display = 'none';
+        addSubjectBtn.style.display = 'block';
+    }
+});
+
+subjectInput.addEventListener('blur', () => {
+    setTimeout(() => {
+        if (subjectInput.value.trim()) {
+            addSubject(subjectInput.value.trim());
+        }
+        subjectInput.value = '';
+        subjectInput.style.display = 'none';
+        addSubjectBtn.style.display = 'block';
+    }, 200);
+});
+
+function addSubject(subject) {
+    if (!subjects.includes(subject)) {
+        subjects.push(subject);
+        renderSubjectTags();
+    }
+}
+
+function renderSubjectTags() {
+    subjectTags.innerHTML = subjects.map(subject => `
+        <div class="subject-tag">
+            ${subject}
+            <button class="remove-subject" onclick="removeSubject('${subject}')">×</button>
+        </div>
+    `).join('');
+}
 
 // Tab Management
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -42,16 +103,16 @@ uploadArea.addEventListener('click', () => fileInput.click());
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
-    uploadArea.style.background = '#f8f9ff';
+    uploadArea.style.borderColor = '#666';
 });
 
 uploadArea.addEventListener('dragleave', () => {
-    uploadArea.style.background = '';
+    uploadArea.style.borderColor = '';
 });
 
 uploadArea.addEventListener('drop', (e) => {
     e.preventDefault();
-    uploadArea.style.background = '';
+    uploadArea.style.borderColor = '';
     fileInput.files = e.dataTransfer.files;
     updateFileDisplay();
 });
@@ -76,13 +137,13 @@ async function uploadFiles() {
 
     showLoading(true);
 
-    const subject = document.getElementById('subject').value;
-
     try {
         for (const file of uploadedFiles) {
             const formData = new FormData();
             formData.append('file', file);
-            if (subject) formData.append('subject', subject);
+            if (subjects.length > 0) {
+                formData.append('subject', subjects.join(', '));
+            }
 
             const response = await fetch(`${API_BASE}/api/upload`, {
                 method: 'POST',
@@ -101,8 +162,10 @@ async function uploadFiles() {
         // Reset
         fileInput.value = '';
         uploadedFiles = [];
-        uploadArea.querySelector('p').textContent = 'Drag & drop your files here or click to browse';
-        document.getElementById('subject').value = '';
+        uploadArea.querySelector('.upload-text').textContent = 'Drop files or ';
+        uploadArea.querySelector('.upload-text').innerHTML = 'Drop files or <span class="browse-link">browse</span>';
+        subjects = [];
+        renderSubjectTags();
 
         // Reload materials
         await loadMaterials();
