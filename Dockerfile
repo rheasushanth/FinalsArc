@@ -4,6 +4,10 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     tesseract-ocr-eng \
     libgl1 \
+    libjpeg-dev \
+    zlib1g-dev \
+    libpng-dev \
+    libfreetype6-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
