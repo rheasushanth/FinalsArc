@@ -11,7 +11,7 @@ from .explainer import ConceptExplainer
 class AITutor:
     """Main AI-powered Study Buddy and Personal Tutor"""
     
-    def __init__(self, api_key: str = None, provider: str = "openai", model: str = None):
+    def __init__(self, api_key: str = None, provider: str = None, model: str = None):
         """
         Initialize AI Tutor
         
