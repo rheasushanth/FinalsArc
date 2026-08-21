@@ -40,3 +40,4 @@ logs/
 dist/
 build/
 *.egg-info/
+.vercel

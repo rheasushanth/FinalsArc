@@ -5,6 +5,7 @@ python-multipart==0.0.6
 
 # AI and LLM
 openai==1.10.0
+httpx<0.28
 anthropic==0.18.0
 
 # Document Processing

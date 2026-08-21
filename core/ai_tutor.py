@@ -50,6 +50,11 @@ class AITutor:
             if not key:
                 raise ValueError("ANTHROPIC_API_KEY not found in environment variables")
             return key
+        elif self.provider == 'gemini':
+            key = os.getenv('GEMINI_API_KEY')
+            if not key:
+                raise ValueError("GEMINI_API_KEY not found in environment variables")
+            return key
         else:
             raise ValueError(f"Unsupported provider: {self.provider}")
     
@@ -62,6 +67,8 @@ class AITutor:
             return os.getenv('MODEL_NAME', 'gpt-4o-mini')
         elif self.provider == 'anthropic':
             return os.getenv('MODEL_NAME', 'claude-3-opus-20240229')
+        elif self.provider == 'gemini':
+            return os.getenv('MODEL_NAME', 'gemini-2.5-flash')
         return 'gpt-4o-mini'
     
     def _init_ai_client(self):
@@ -79,6 +86,12 @@ class AITutor:
         elif self.provider == 'anthropic':
             from anthropic import Anthropic
             return Anthropic(api_key=self.api_key)
+        elif self.provider == 'gemini':
+            from openai import OpenAI
+            return OpenAI(
+                api_key=self.api_key,
+                base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+            )
         else:
             raise ValueError(f"Unsupported provider: {self.provider}")
     

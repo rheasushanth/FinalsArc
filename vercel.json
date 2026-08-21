@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
+  ],
+  "env": {
+    "UPLOAD_FOLDER": "/tmp/uploads",
+    "PROCESSED_FOLDER": "/tmp/processed",
+    "MAX_FILE_SIZE": "10"
+  },
+  "functions": {
+    "app.py": {
+      "maxDuration": 60
+    }
+  }
+}
