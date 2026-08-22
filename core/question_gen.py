@@ -214,7 +214,11 @@ Make it exam-relevant and include a thorough explanation."""
                 temperature=0.8,
                 max_tokens=3000
             )
-            return response.choices[0].message.content
+            content = response.choices[0].message.content
+            if content is None:
+                finish_reason = response.choices[0].finish_reason
+                raise ValueError(f"AI provider returned an empty response (finish_reason={finish_reason})")
+            return content
         else:
             # Anthropic
             response = self.ai_client.messages.create(

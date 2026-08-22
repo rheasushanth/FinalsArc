@@ -189,7 +189,11 @@ Be thorough but clear. Use simple language first, then technical terms."""
                 temperature=0.7,
                 max_tokens=4000
             )
-            return response.choices[0].message.content
+            content = response.choices[0].message.content
+            if content is None:
+                finish_reason = response.choices[0].finish_reason
+                raise ValueError(f"AI provider returned an empty response (finish_reason={finish_reason})")
+            return content
         else:
             # Anthropic style
             response = self.ai_client.messages.create(
