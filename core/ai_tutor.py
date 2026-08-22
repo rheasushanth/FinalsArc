@@ -68,7 +68,7 @@ class AITutor:
         elif self.provider == 'anthropic':
             return os.getenv('MODEL_NAME', 'claude-3-opus-20240229')
         elif self.provider == 'gemini':
-            return os.getenv('MODEL_NAME', 'gemini-2.5-flash')
+            return os.getenv('MODEL_NAME', 'gemini-flash-lite-latest')
         return 'gpt-4o-mini'
     
     def _init_ai_client(self):
