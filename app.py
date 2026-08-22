@@ -57,6 +57,7 @@ class QuestionRequest(BaseModel):
     question: str
     material_id: Optional[str] = None
     level: Optional[str] = "intermediate"
+    material_content: Optional[str] = None
 
 
 class SimplerRequest(BaseModel):
@@ -69,6 +70,7 @@ class NotesRequest(BaseModel):
     subject: Optional[str] = None
     level: Optional[str] = "intermediate"
     focus: Optional[str] = "concept-oriented"
+    material_content: Optional[str] = None
 
 
 class QuizRequest(BaseModel):
@@ -76,6 +78,7 @@ class QuizRequest(BaseModel):
     num_questions: Optional[int] = 5
     difficulty: Optional[str] = "mixed"
     subject: Optional[str] = None
+    material_content: Optional[str] = None
 
 
 class MultipleApproachesRequest(BaseModel):
@@ -159,6 +162,7 @@ async def upload_file(
             "filename": file.filename,
             "format": processed_content.get('format'),
             "metadata": processed_content.get('metadata'),
+            "full_text": processed_content.get('full_text', ''),
             "subject": subject,
             "message": "File uploaded and processed successfully"
         }
@@ -226,7 +230,8 @@ async def generate_notes(request: NotesRequest):
             material_id=request.material_id,
             subject=request.subject,
             level=request.level,
-            focus=request.focus
+            focus=request.focus,
+            content=request.material_content
         )
         
         if not result['success']:
@@ -273,7 +278,8 @@ async def ask_question(request: QuestionRequest):
         result = ai_tutor.ask_question(
             question=question,
             material_id=request.material_id,
-            level=request.level
+            level=request.level,
+            material_content=request.material_content
         )
         
         if not result['success']:
@@ -362,7 +368,8 @@ async def generate_quiz(request: QuizRequest):
             material_id=request.material_id,
             num_questions=request.num_questions,
             difficulty=request.difficulty,
-            subject=request.subject
+            subject=request.subject,
+            content=request.material_content
         )
         
         if not result['success']:
@@ -380,13 +387,11 @@ async def generate_quiz(request: QuizRequest):
 async def delete_material(material_id: str):
     """Delete an uploaded material"""
     try:
-        # Check if material exists
-        if material_id not in ai_tutor.materials:
-            raise HTTPException(status_code=404, detail="Material not found")
-        
-        # Delete from AI tutor
-        del ai_tutor.materials[material_id]
-        
+        # Delete from AI tutor if present (may not be, since serverless
+        # instances don't share in-memory state across requests)
+        if material_id in ai_tutor.materials:
+            del ai_tutor.materials[material_id]
+
         # Delete files
         for ext in FileValidator.SUPPORTED_EXTENSIONS:
             file_path = os.path.join(UPLOAD_FOLDER, f"{material_id}{ext}")

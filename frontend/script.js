@@ -9,6 +9,36 @@ let currentQuestion = '';
 let currentExplanation = '';
 let subjects = ['Mathematics', 'Biology'];
 
+// Materials (including extracted text) are kept client-side rather than
+// fetched from the server: on a serverless deployment, each request can
+// hit a different backend instance with no memory of previous uploads.
+const MATERIALS_STORAGE_KEY = 'finalsArcMaterials';
+
+function loadMaterialsFromStorage() {
+    try {
+        const stored = localStorage.getItem(MATERIALS_STORAGE_KEY);
+        materials = stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('Error reading materials from storage:', error);
+        materials = [];
+    }
+    displayMaterials();
+    updateMaterialSelects();
+}
+
+function saveMaterialsToStorage() {
+    try {
+        localStorage.setItem(MATERIALS_STORAGE_KEY, JSON.stringify(materials));
+    } catch (error) {
+        console.error('Error saving materials to storage:', error);
+    }
+}
+
+function getMaterialContent(materialId) {
+    const material = materials.find(m => m.material_id === materialId);
+    return material ? material.full_text : undefined;
+}
+
 // DOM Elements
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
@@ -156,6 +186,15 @@ async function uploadFiles() {
                 throw new Error(result.detail || 'Upload failed');
             }
 
+            materials.push({
+                material_id: result.material_id,
+                file_name: result.filename,
+                format: result.format,
+                content_length: (result.full_text || '').length,
+                full_text: result.full_text || ''
+            });
+            saveMaterialsToStorage();
+
             showNotification(`✅ ${file.name} uploaded successfully!`, 'success');
         }
 
@@ -167,28 +206,13 @@ async function uploadFiles() {
         subjects = [];
         renderSubjectTags();
 
-        // Reload materials
-        await loadMaterials();
+        displayMaterials();
+        updateMaterialSelects();
 
     } catch (error) {
         showNotification(`❌ Error: ${error.message}`, 'error');
     } finally {
         showLoading(false);
-    }
-}
-
-async function loadMaterials() {
-    try {
-        const response = await fetch(`${API_BASE}/api/materials`);
-        const data = await response.json();
-
-        if (data.success) {
-            materials = data.materials;
-            displayMaterials();
-            updateMaterialSelects();
-        }
-    } catch (error) {
-        console.error('Error loading materials:', error);
     }
 }
 
@@ -225,22 +249,18 @@ function updateMaterialSelects() {
 async function deleteMaterial(materialId) {
     if (!confirm('Are you sure you want to delete this material?')) return;
 
-    showLoading(true);
+    materials = materials.filter(m => m.material_id !== materialId);
+    saveMaterialsToStorage();
+    displayMaterials();
+    updateMaterialSelects();
+    showNotification('Material deleted', 'success');
+
+    // Best-effort server-side cleanup; ignore failures since the backend
+    // may not have this material in memory (serverless instance mismatch)
     try {
-        const response = await fetch(`${API_BASE}/api/material/${materialId}`, {
-            method: 'DELETE'
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            showNotification('Material deleted', 'success');
-            await loadMaterials();
-        }
+        await fetch(`${API_BASE}/api/material/${materialId}`, { method: 'DELETE' });
     } catch (error) {
-        showNotification(`Error: ${error.message}`, 'error');
-    } finally {
-        showLoading(false);
+        console.error('Error cleaning up material on server:', error);
     }
 }
 
@@ -263,7 +283,12 @@ async function generateNotes() {
         const response = await fetch(`${API_BASE}/api/generate-notes`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ material_id: materialId, level, focus })
+            body: JSON.stringify({
+                material_id: materialId,
+                level,
+                focus,
+                material_content: getMaterialContent(materialId)
+            })
         });
 
         const result = await response.json();
@@ -317,7 +342,8 @@ async function askQuestion() {
             body: JSON.stringify({
                 question,
                 material_id: materialId || null,
-                level
+                level,
+                material_content: materialId ? getMaterialContent(materialId) : undefined
             })
         });
 
@@ -406,7 +432,8 @@ async function generateQuiz() {
             body: JSON.stringify({
                 material_id: materialId,
                 num_questions: numQuestions,
-                difficulty
+                difficulty,
+                material_content: getMaterialContent(materialId)
             })
         });
 
@@ -535,5 +562,5 @@ function convertMarkdown(text) {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    loadMaterials();
+    loadMaterialsFromStorage();
 });

@@ -119,29 +119,32 @@ class AITutor:
         material_id: str,
         subject: Optional[str] = None,
         level: str = "intermediate",
-        focus: str = "concept-oriented"
+        focus: str = "concept-oriented",
+        content: Optional[str] = None
     ) -> Dict[str, any]:
         """
         Generate comprehensive study notes for a material
-        
+
         Args:
             material_id: ID of the material
             subject: Subject area
             level: Academic level
             focus: Focus type
-            
+            content: Material text, passed directly when the caller already
+                has it (e.g. cached client-side) instead of relying on
+                server-side in-memory storage
+
         Returns:
             Generated notes
         """
-        if material_id not in self.materials:
-            return {
-                'success': False,
-                'error': 'Material not found'
-            }
-        
-        material = self.materials[material_id]
-        content = material.get('full_text', '')
-        
+        if content is None:
+            if material_id not in self.materials:
+                return {
+                    'success': False,
+                    'error': 'Material not found'
+                }
+            content = self.materials[material_id].get('full_text', '')
+
         if not content:
             return {
                 'success': False,
@@ -171,24 +174,27 @@ class AITutor:
         self,
         question: str,
         material_id: Optional[str] = None,
-        level: str = "intermediate"
+        level: str = "intermediate",
+        material_content: Optional[str] = None
     ) -> Dict[str, any]:
         """
         Answer a student's question
-        
+
         Args:
             question: The student's question
             material_id: Optional material ID for context
             level: Student level
-            
+            material_content: Material text, passed directly when the caller
+                already has it instead of relying on server-side storage
+
         Returns:
             Explanation
         """
         # Get context if material provided
-        context = None
-        if material_id and material_id in self.materials:
+        context = material_content
+        if context is None and material_id and material_id in self.materials:
             context = self.materials[material_id].get('full_text', '')
-        
+
         return self.explainer.explain_concept(
             question=question,
             context=context,
@@ -220,29 +226,31 @@ class AITutor:
         material_id: str,
         num_questions: int = 5,
         difficulty: str = "mixed",
-        subject: Optional[str] = None
+        subject: Optional[str] = None,
+        content: Optional[str] = None
     ) -> Dict[str, any]:
         """
         Generate practice questions for a material
-        
+
         Args:
             material_id: ID of the material
             num_questions: Number of questions
             difficulty: Difficulty level
             subject: Subject area
-            
+            content: Material text, passed directly when the caller already
+                has it instead of relying on server-side storage
+
         Returns:
             Quiz questions with solutions
         """
-        if material_id not in self.materials:
-            return {
-                'success': False,
-                'error': 'Material not found'
-            }
-        
-        material = self.materials[material_id]
-        content = material.get('full_text', '')
-        
+        if content is None:
+            if material_id not in self.materials:
+                return {
+                    'success': False,
+                    'error': 'Material not found'
+                }
+            content = self.materials[material_id].get('full_text', '')
+
         if not content:
             return {
                 'success': False,
